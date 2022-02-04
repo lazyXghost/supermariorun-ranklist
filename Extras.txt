@@ -1,0 +1,30 @@
+exception = False
+verdict = problem["verdict"] == "OK"
+# verdict = False
+# try:
+# except:
+#     exception = True
+#     print("     Found exception in problem verdict")
+
+problem_time = problem["creationTimeSeconds"]>=TIME_STAMP
+# problem_time = False
+# try:
+# except:
+#     exception = True
+#     print("     Found exception in Problem time")
+
+problem_name = problem["problem"]["name"]
+# problem_name = "XXXXX"
+# try:
+# except:
+#     exception = True
+#     print("     Found exception in problem name")
+
+rating = False
+try:
+    rating = problem["problem"]["rating"] >= max (user_rating, min_problem_rating)
+except:
+    exception = True
+    # print("     Found exception in problem rating")
+    # print("     ",problem["problem"])
+    # pass

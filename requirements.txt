@@ -1,0 +1,17 @@
+APScheduler==3.8.1
+asgiref==3.5.0
+certifi==2021.10.8
+charset-normalizer==2.0.11
+Django==4.0.2
+idna==3.3
+numpy==1.22.2
+pandas==1.4.0
+python-dateutil==2.8.2
+pytz==2021.3
+pytz-deprecation-shim==0.1.0.post0
+requests==2.27.1
+six==1.16.0
+sqlparse==0.4.2
+tzdata==2021.5
+tzlocal==2.0.0
+urllib3==1.26.8
