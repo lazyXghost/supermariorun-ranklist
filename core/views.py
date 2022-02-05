@@ -9,7 +9,7 @@ import time
 # https://docs.google.com/spreadsheets/d/1hfScqSW_y_rl7x1xNWZxUHt0GXWGkpZf2z2EoV6MLSY/edit#gid=1259500772
 sheet = pd.DataFrame(pd.read_csv('data'))
 details = []
-ranklist_updation_time = 30 #minutes
+ranklist_updation_time = 20 #minutes
 min_problem_rating = 1200
 TIME_STAMP=1643913000 #codeforces time stamp for 4th feb 2022
 cycle_no = 0
@@ -22,10 +22,10 @@ startTime = 0
 
 ##################################################
 # functions to compute data of each user
-def removeDuplicates(details):
+def removeDuplicates(y):
     x = set()
     res = []
-    for _ in details:
+    for _ in y:
         curr_size = len(x)
         x.add(_)
         if len(x) != curr_size:
@@ -34,9 +34,6 @@ def removeDuplicates(details):
 
 def get_user_details(handle):
     time.sleep(sleepTime)
-    for x in handle.split(" "):
-        if len(x):
-            handle = x
 
     user_rating = 0
     rating_api_url = "https://codeforces.com/api/user.info?handles="+handle
@@ -88,15 +85,27 @@ def get_all_details():
     for i in range(len(sheet)):
         name = sheet.iloc[i]['Name']
         roll_no = sheet.iloc[i]['Roll No*']
-        handle = sheet.iloc[i]['Codeforces handle'].split("/")[-1]
-        print("Processing", name, "-:")
 
-        user_details = get_user_details(handle)
+        temp = sheet.iloc[i]['Codeforces handle'].split("/")[-1].split(" ")
+        if len(temp)>2:
+            handle = ""
+        else:
+            if len(temp[0]):
+                handle = temp[0]
+            else:
+                handle = temp[1]
+
+
+        print("Processing", name, "-:")
+        try:
+            user_details = get_user_details(handle)
+        except:
+            user_details = [0,0]
         print("    ",user_details)
 
         currentdetails.append((name,roll_no, handle, user_details[0], user_details[1]))
     print(RedListedUsers)
-    currentdetails.sort(key=lambda x:x[3], reverse=True)
+    currentdetails.sort(key=lambda x:(x[3],x[4]), reverse=True)
     details = removeDuplicates(currentdetails)
 
     systemState = "Sleeping"

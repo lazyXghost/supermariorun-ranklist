@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-yndmx5g88($5rye-5#+0cn8_#yb^to7gb&@bog*sjx8ztvtv9o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['supermariorun-ranklist.herokuapp.com', '127.0.0.1', 'localhost']
 CSRF_TRUSTED_ORIGINS = ['https://supermariorun-ranklist.herokuapp.com']
