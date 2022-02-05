@@ -112,11 +112,11 @@ def updater():
 # funtion to display computed data
 def index(req):
     global details, systemState, startTime
-
     if systemState=="down":
         startTime = time.time()
         get_all_details()
 
+    print("SystemState", systemState)
     updateMessage = "Updating"
     if systemState == "Sleeping":
         rem_time = ranklist_updation_time - int((time.time()-startTime)/60)%ranklist_updation_time
