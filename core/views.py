@@ -1,4 +1,3 @@
-from os import system
 from django.shortcuts import render
 import requests
 import pandas as pd
@@ -7,21 +6,32 @@ import time
 
 ##################################################
 # Variables
-systemState = "sleeping"
+# https://docs.google.com/spreadsheets/d/1hfScqSW_y_rl7x1xNWZxUHt0GXWGkpZf2z2EoV6MLSY/edit#gid=1259500772
 sheet = pd.DataFrame(pd.read_csv('data'))
 details = []
-ranklist_updation_time = 20 #minutes
+ranklist_updation_time = 30 #minutes
 min_problem_rating = 1200
 TIME_STAMP=1643913000 #codeforces time stamp for 4th feb 2022
 cycle_no = 0
-sleepTime = 2
-RedListedUsers = []
-RedListedProblems = []
+sleepTime = 2 #timeout between codeforces api call
+RedListedUsers = [] #users having wrong handle
+systemState = "down"
 proxy = {'http' : '','https' : ''}
+startTime = 0
 ##################################################
 
 ##################################################
 # functions to compute data of each user
+def removeDuplicates(details):
+    x = set()
+    res = []
+    for _ in details:
+        curr_size = len(x)
+        x.add(_)
+        if len(x) != curr_size:
+            res.append(_)
+    return res
+
 def get_user_details(handle):
     time.sleep(sleepTime)
     for x in handle.split(" "):
@@ -63,17 +73,17 @@ def get_user_details(handle):
     else:
         print("     All Problems exception")
         print("     ",problem_api_url, user_problem_json)
-        RedListedProblems.append(problem_api_url)
     return [count, user_rating]
 
 
 def get_all_details():
-    global cycle_no, sheet, details,RedListedUsers,RedListedProblems,systemState
-    cycle_no+=1
+    global cycle_no, sheet, details,RedListedUsers,systemState
+    systemState = "Updating"
+
+    cycle_no += 1
     print("Cycle ",cycle_no)
 
     RedListedUsers = []
-    RedListedProblems = []
     currentdetails = []
     for i in range(len(sheet)):
         name = sheet.iloc[i]['Name']
@@ -84,16 +94,12 @@ def get_all_details():
         user_details = get_user_details(handle)
         print("    ",user_details)
 
-        if(systemState == "working"):
-            details.append((name,roll_no, handle, user_details[0], user_details[1]))
-            details.sort(key=lambda x:x[3], reverse=True)
-
         currentdetails.append((name,roll_no, handle, user_details[0], user_details[1]))
     print(RedListedUsers)
-    print(RedListedProblems)
     currentdetails.sort(key=lambda x:x[3], reverse=True)
-    details = currentdetails
-    # return redirect('/')
+    details = removeDuplicates(currentdetails)
+
+    systemState = "Sleeping"
 
 def updater():
     scheduler = BackgroundScheduler()
@@ -105,10 +111,16 @@ def updater():
 #################################################
 # funtion to display computed data
 def index(req):
-    global details, systemState
-    if systemState=="sleeping":
-        systemState = "working"
+    global details, systemState, startTime
+
+    if systemState=="down":
+        startTime = time.time()
         get_all_details()
-        systemState = "up"
-    return render(req, 'core/base.html', {'details': details})
+
+    updateMessage = "Updating"
+    if systemState == "Sleeping":
+        rem_time = ranklist_updation_time - int((time.time()-startTime)/60)%ranklist_updation_time
+        updateMessage += " in "+str(rem_time)+" minutes"
+
+    return render(req, 'core/base.html', {'details': details, "UpdateMessage": updateMessage})
 #################################################
