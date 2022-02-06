@@ -9,7 +9,7 @@ import time
 # https://docs.google.com/spreadsheets/d/1hfScqSW_y_rl7x1xNWZxUHt0GXWGkpZf2z2EoV6MLSY/edit#gid=1259500772
 sheet = pd.DataFrame(pd.read_csv('data'))
 details = {}
-ranklist_updation_time = 15 #minutes
+ranklist_updation_time = 60 #minutes
 min_problem_rating = 1200
 TIME_STAMP=1643913000 #codeforces time stamp for 4th feb 2022
 cycle_no = 0
