@@ -104,7 +104,7 @@ def get_all_details():
             print("    Rating-:",rating)
             print("    Questions-:",questions)
         else:
-            handle = "WRONG HANDLE"
+            handle = "WRONG HANDLE -:"+sheet.iloc[i]['Codeforces handle']
             rating = -1
             questions = -1
 
